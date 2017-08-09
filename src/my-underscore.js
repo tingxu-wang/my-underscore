@@ -1,3 +1,10 @@
+/*
+* 个人学习underscore源码的过程中实现的个人版本，基本上是看到一块搞得差不多明白了就写一段
+* 刚开始的时候有照着写的情况，后来主要采用理解之后自己实现，所以有些函数的具体实现和原作不相同
+* 但是我自认为自己的写法又没有什么问题，所以就保留了下来，不过会做出注释说明
+* 同时一些处理浏览器兼容性的hack我也都没有加入，只关心主要的实现思路
+* */
+
 (function() {
 
 	root = this;
@@ -115,9 +122,21 @@
 
 	};
 
-	// TODO:待实现
+	var property = function(key){
+		return function(obj){
+			return obj === null ? void 0 : obj[key];
+		}
+	};
+
+	/*
+	* 通过对象的length属性判断是否为一个类数组
+	* */
+	var getLength = property('length');
 	var isArrayLike = function(arr){
-		return true;
+		var length = getLength(arr);
+
+		// 原作的写法是 typeof length == 'number' && length >= 0 && length <= MAX_ARRAY_INDEX;
+		return typeof arr === 'object' && length>=0;
 	};
 
 
@@ -135,6 +154,16 @@
 			result[i] = iteratee(obj[currentKey],currentKey,obj);
 		}
 		return result;
+	};
+
+	_.each = function (obj,iteratee,context) {
+		iteratee = cb(iteratee,context);
+		var keys = !isArrayLike(obj) && _.keys(obj);
+		var length = (keys || obj).length;
+		for(var i = 0;i<length;i++){
+			var currentItem = keys ? obj[keys[i]] : obj[i];
+			iteratee(currentItem,i,obj);
+		}
 	};
 
 	/*

@@ -1,8 +1,8 @@
 var obj = {a:'value a',b:'value b'};
-var arr = ['a']
+var arr = ['a','b','c'];
 
-var result=_.map(arr,function(item){
-	return item + ' map'
-});
 
-console.log(result)
+
+var result = _.each(obj,function(item,index,collection){
+	console.log(item,index,collection)
+})
